@@ -1,0 +1,76 @@
+#lab2.asm
+#John Vue
+
+.intel_syntax noprefix
+.data
+
+FireUp:
+        .ascii "It's time to fire up the Atari 2600!\n\0"
+QuestionOne:
+        .ascii "Do you want to shoot your friends (1. Yes, 2. No)\n\0"
+QuestionTwo:
+        .ascii "Do you want to think? (1. Yes, 2. No)\n\0"
+QuestionThree:
+        .ascii "Do you want to drive a fast car? (1. Yes, 2. No)\n\0"
+QuestionFour:
+        .ascii "Do you want to play a sport (1. Yes, 2. No)\n\0"
+FunMessage:
+        .ascii "Have Fun!\0"
+PlayOutlaw:
+        .ascii "Play Outlaw. It's based on the Old West.\n\0"
+Enduro:
+        .ascii "Enduro is a great choice. There is also Grand Prix.\n\0"
+.text
+.global Begin
+
+Begin:
+        lea rsi, FireUp
+        call PrintString
+FirstQuestion:
+        lea rsi, QuestionOne
+        call PrintString
+        call ReadInteger
+
+        cmp rsi, 1
+        je IfOneQOne
+
+        jmp SecondQuestion
+IfOneQOne:
+        lea rsi, PlayOutlaw
+        call PrintString
+        jmp SecondQuestion
+SecondQuestion:
+        lea rsi, QuestionTwo
+        call PrintString
+        call ReadInteger
+
+        cmp rsi, 1
+        je ThirdQuestion
+
+        jmp ThirdQuestion
+ThirdQuestion:
+        lea rsi, QuestionThree
+        call PrintString
+        call ReadInteger
+
+        cmp rsi, 1
+        je IfOneQThree
+
+        jmp FourthQuestion
+IfOneQThree:
+        lea rsi, Enduro
+        call PrintString
+        jmp FourthQuestion
+FourthQuestion:
+        lea rsi, QuestionFour
+        call PrintString
+        call ReadInteger
+
+        cmp rsi, 1
+        je EndMessage
+EndMessage:
+        lea rsi, FunMessage
+        call PrintString
+        jmp End
+End:
+        call ExitProgram
