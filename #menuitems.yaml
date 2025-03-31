@@ -1,0 +1,153 @@
+#menuitems.asm
+#John Vue
+
+.intel_syntax noprefix
+.data
+
+PPP:
+        .ascii "1. Pumpkin Pasty Pie :520 grams of sugar\n\0"
+FOB:
+        .ascii "2. Flagon of ButterBeer :650 grams of sugar\n\0"
+TOIC:
+        .ascii "3. Tower of Ice Cream :1605 grams of sugar\n\0"
+TT:
+        .ascii "4. Treacle Tart :1004 grams of sugar\n\0"
+LTT:
+        .ascii "5. Leave the table\n\0"
+YouHave:
+        .ascii "You have \0"
+gramsleft:
+        .ascii " grams of sugar left.\n\0"
+FiveHundred:
+        .ascii "500\0"
+What:
+        .ascii "What did you all eat?\n\0"
+How:
+        .ascii "How many shared eating it?\n\0"
+Thats:
+        .ascii "That's \0"
+grams:
+        .ascii " grams!\n\0"
+TooMuch:
+        .ascii "You have eaten too much sugar!\n\0"
+Detention:
+        .ascii "You now have detention with an official from the Enthusiastic Promotion of Stu>
+YouLeft:
+        .ascii "You left the feast happy to know that the Ministry official will not see you t>
+Input:
+        .ascii "\0"
+MenuItems:
+        .quad PPP
+        .quad FOB
+        .quad TOIC
+        .quad TT
+        .quad LTT
+NumberOfGramsOfSugar:
+        .quad 520
+        .quad 650
+        .quad 1605
+        .quad 1004
+MaxGrams:
+        .quad 500
+UserInput:
+        .quad 0
+Quotient:
+        .quad 130
+        .quad 401
+        .quad 321
+.text
+.global _start
+
+_start:
+        #divide = div
+        #MOV rax, 520 rax is the dividend
+        #MOV rbx, 4   divisor
+        #CQO          sign extend to rdx
+        #IDIV rbx     rax gets quotiend
+        #             rdx gets remainder
+
+        lea rax, PPP
+        call PrintString
+
+        lea rax, FOB
+        call PrintString
+
+        lea rax, TOIC
+        call PrintString
+
+        lea rax, TT
+        call PrintString
+
+        lea rax, LTT
+        call PrintString
+
+        lea rax, YouHave
+        call PrintString
+
+        mov rax, MaxGrams
+        call PrintInteger
+
+        lea rax, gramsleft
+        call PrintString
+
+        lea rax, What                           #What did you all eat?
+        call PrintString
+
+        call ScanInteger                        #Scan userinput
+        mov rsi, rax
+        sub rsi, 1                              #index 0
+
+        mov rax, [MenuItems + rsi * 8]          #rax, the number inputted is the number on the>
+        call PrintString
+
+        lea rax, How                            #How many shared?
+        call PrintString
+
+        call ScanInteger
+        mov UserInput, rax                      #UserInput, number inputted of how many shared>
+        jmp Divide
+ShareAgain:
+        lea rax, What
+        call PrintString
+        call ScanInteger
+        mov rsi, rax
+        sub rsi, 1
+        mov rax, [MenuItems + rsi * 8]
+        call PrintString
+        call ScanInteger
+        mov UserInput, rax
+
+        jmp Check
+Divide:
+        lea rax, Thats
+        call PrintString
+        mov rax, [NumberOfGramsOfSugar]
+        mov rbx, UserInput                      #user input that was entered on scan integer l>
+        cqo
+        idiv rbx
+        mov Quotient, rdi
+        call PrintInteger                               #the quotient?
+        lea rax, grams
+        call PrintString
+        jmp Subtract
+Subtract:
+        lea rax, YouHave
+        call PrintString
+        mov rax, MaxGrams
+        sub rax, [Quotient]
+        call PrintInteger
+        lea rax, gramsleft
+        call PrintString
+        jmp Check
+Check:
+        cmp rax, 500
+        jl GreaterThan500
+
+        jg ShareAgain
+        jmp Exit
+GreaterThan500:
+        lea rax, TooMuch
+        call PrintString
+        jmp Exit
+Exit:
+        call Exit
