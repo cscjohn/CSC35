@@ -1,0 +1,139 @@
+#lab3.asm
+#John Vue
+
+.intel_syntax noprefix
+.data
+
+Red:
+        .ascii "1. Pokemon Red\n\0"
+Blue:
+        .ascii "2. Pokemon Blue\n\0"
+Yellow:
+        .ascii "3. Pokemon Yellow\n\0"
+Gold:
+        .ascii "4. Pokemon Gold\n\0"
+Silver:
+        .ascii "5. Pokemon Silver\n\0"
+Crystal:
+        .ascii "6. Pokemon Crystal\n\0"
+GameGet:
+        .ascii "What game are you going to play?\n\0"
+YouSpentTotal:
+        .ascii "You spent a total of \0"
+QuartersSpent:
+        .ascii " quarters.\n\0"
+ChoseRed:
+        .ascii "You enjoyed a fun adventure with Charizard!\n\0"
+ChoseBlue:
+        .ascii "You enjoyed a fun adventure with the Blastoise and the Squirtle Squad!\n\0"
+ChoseYellow:
+        .ascii "You enjoyed an electrifying time with Pikachu!\n\0"
+ChoseGold:
+        .ascii "You went on a mystical journey to find Ho-Oh!\n\0"
+ChoseSilver:
+        .ascii "You dove into the mystery to seek out Lugia!\n\0"
+ChoseCrystal:
+        .ascii "You traveled across the island in search of the benevolent Suicune!\n\0"
+
+.text
+.global Begin
+
+Begin:
+
+        mov rax, 0              #rax =  counter address for quarters spent
+
+Menu:
+
+        lea rsi, GameGet
+        call PrintString
+
+        lea rsi, Red
+        call PrintString
+
+        lea rsi, Blue
+        call PrintString
+        lea rsi, Yellow
+        call PrintString
+
+        lea rsi, Gold
+        call PrintString
+
+        lea rsi, Silver
+        call PrintString
+
+        lea rsi, Crystal
+        call PrintString
+
+        call ReadInteger
+
+        mov rbx, rsi            #rbx = address that keeps track of game inputted
+
+        cmp rbx, 1
+        je case_red
+
+        cmp rbx, 2
+        je case_blue
+
+        cmp rbx, 3
+        je case_yellow
+
+        cmp rbx, 4
+        je case_gold
+
+        cmp rbx, 5
+        je case_silver
+
+        cmp rbx, 6
+        je case_crystal
+
+        cmp rbx, 7
+        jmp case_result
+
+        jmp default
+
+case_red:
+        lea rsi, ChoseRed
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_blue:
+        lea rsi, ChoseBlue
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_yellow:
+        lea rsi, ChoseYellow
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_gold:
+        lea rsi, ChoseGold
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_silver:
+        lea rsi, ChoseSilver
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_crystal:
+        lea rsi, ChoseCrystal
+        call PrintString
+        add rax, 1
+        jmp Menu
+case_result:
+        jmp ResultMessage
+default:
+        lea rsi, GameGet
+        call PrintString
+ResultMessage:
+        lea rsi, YouSpentTotal
+        call PrintString
+        mov rsi, rax
+        call PrintInteger               #Prints the total number of Quarters
+        lea rsi, QuartersSpent
+        call PrintString
+        jmp End
+
+End:
+        call ExitProgram
